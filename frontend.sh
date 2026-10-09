@@ -1,0 +1,53 @@
+LOGFOLDER="/var/log/roboshop"
+mkdir -p $LOGFOLDER
+sudo chown ec2-user:ec2-user $LOGFOLDER
+sudo chmod 755 $LOGFOLDER
+LOGFILE="$LOGFOLDER/$0.log"
+SCRIPT_DIR=$PWD
+
+USER_ID=$(id -u)
+R="\e[31m"
+G="\e[32m"
+Y="\e[33m"
+N="\e[0m"
+TIMESTAMP=$(data '+%Y-%m-%d %H:%M:%S')
+
+if [ $UUSER_ID -ne 0 ]; then
+    echo -e "$TIMESTAMP [ERROR] $R please run the script with root acces $N" | tee -a $LOGFILE
+    exit 1
+fi
+
+VALIDATE(){
+    if [ $1 -ne 0 ]; then
+        echo -e "$TIMESTAMP [ERROR] $R $2 ... FAILED $N" | tee -a $LOGFILE
+        exit 1
+    else
+        echo -e "$TIMESTAMP [INFO] $G $2 ... SUCCEED $N" | tee -a $LOGFILE
+    fi
+}
+
+dnf module disable nginx -y &>> $LOGFILE
+dnf module enable nginx:1.24 -y &>> $LOGFILE
+dnf install nginx -y &>> $LOGFILE
+VALIDATE $? "Installing nodejs"
+
+systemctl enable nginx &>> $LOGFILE 
+systemctl start nginx &>> $LOGFILE
+VALIDATE $? "enable and start nodejs"
+
+rm -rf /usr/share/nginx/html/* &>> $LOGFILE
+VALIDATE $? "default content is removing from html directory"
+
+curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip &>> $LOGFILE
+cd /usr/share/nginx/html 
+unzip /tmp/frontend.zip &>> $LOGFILE
+VALIDATE $? "download and extract of code done"
+
+rm -rf /etc/nginx/nginx.conf
+VALIDATE $? "Removed Default conf"
+
+cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf
+VALIDATE $? "config file copied"
+
+systemctl restart nginx
+VALIDATE $? "nginx restart"
