@@ -46,26 +46,26 @@ fi
 rm -rf /app
 VALIDATE $? "removing existing code"
 
-rm -rf /tmp/user.zip
-VALIDATE $? "removing user zip"
+rm -rf /tmp/cart.zip
+VALIDATE $? "removing cart zip"
 
 mkdir -p /app &>> $LOGFILE
 VALIDATE $? "Creating app directory"
 
-curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>> $LOGFILE
+curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>> $LOGFILE
 cd /app
-unzip /tmp/user.zip &>> $LOGFILE
-VALIDATE $? "Downloaded and extrated user code"
+unzip /tmp/cart.zip &>> $LOGFILE
+VALIDATE $? "Downloaded and extrated cart code"
 
 npm install &>> $LOGFILE
 VALIDATE $? "Installing dependencies"
 
-cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service
+cp $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service
 VALIDATE $? "Created systemctl service"
 
 systemctl daemon-reload &>> $LOGFILE
 VALIDATE $? "Daemon reload is done"
 
-systemctl enable user &>> $LOGFILE
-systemctl start user &>> $LOGFILE
-VALIDATE $? "Restarting user"
+systemctl enable cart &>> $LOGFILE
+systemctl start cart &>> $LOGFILE
+VALIDATE $? "Restarting cart"
