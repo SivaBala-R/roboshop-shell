@@ -39,5 +39,8 @@ systemctl enable mariadb &>> $LOGS_FILE
 systemctl start mariadb &>> $LOGS_FILE
 VALIDATE $? "enabled and started mysql-server"
 
-mysql_secure_installation --set-root-pass RoboShop@1
-VALIDATE $? "Setting up root password"
+sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'RoboShop@1';"
+VALIDATE $? "Setting root password"
+
+# mysql_secure_installation --set-root-pass RoboShop@1
+# VALIDATE $? "Setting up root password"
