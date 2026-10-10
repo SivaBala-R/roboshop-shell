@@ -28,11 +28,15 @@ VALIDATE(){
     fi
 }
 
-dnf install mysql -y &>> $LOGS_FILE
+#In linux we don't have mysql-server repo if need mysql-server then we need add mysql-server repos and install
+# dnf install mysql-server -y &>> $LOGS_FILE 
+# VALIDATE $? "Installing mysql"
+
+dnf install mariadb105-server -y &>> $LOGS_FILE
 VALIDATE $? "Installing mysql-server"
 
-systemctl enable mysqld &>> $LOGS_FILE
-systemctl start mysqld &>> $LOGS_FILE
+systemctl enable mariadb &>> $LOGS_FILE
+systemctl start mariadb &>> $LOGS_FILE
 VALIDATE $? "enabled and started mysql-server"
 
 mysql_secure_installation --set-root-pass RoboShop@1

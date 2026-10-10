@@ -58,13 +58,17 @@ mvn clean package &>> $LOGS_FILE
 mv target/shipping-1.0.jar shipping.jar &>> $LOGS_FILE
 VALIDATE $? "moving jar file to target directory"
 
-cp $SCRIP_DIR/shipping.service /etc/systemd/system/shipping.service
+cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
 VALIDATE $? "creating systemctl service"
 
 systemctl daemon-reload &>> $LOGS_FILE
 VALIDATE $? "daemon-reload"
 
-dnf install mysql -y &>> $LOGS_FILE
+#In linux we don't have mysql repo if need mysql then we need add mysql repos and install
+# dnf install mysql -y &>> $LOGS_FILE 
+# VALIDATE $? "Installing mysql"
+
+dnf install mariadb105 -y &>> $LOGS_FILE
 VALIDATE $? "Installing mysql"
 
 mysql -h $MYSQL_HOST -u root -pRoboShop@1 -e "use cities" &>>$LOGS_FILE
