@@ -12,9 +12,9 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-TIMESTAMP=$(data '+%Y-%m-%d %H:%M:%S')
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
-if [ $UUSER_ID -ne 0 ]; then
+if [ $USER_ID -ne 0 ]; then
     echo -e "$TIMESTAMP [ERROR] $R please run the script with root acces $N" | tee -a $LOGS_FILE
     exit 1
 fi
