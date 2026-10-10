@@ -14,23 +14,23 @@ N="\e[0m"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
 if [ $USER_ID -ne 0 ]; then
-    echo -e "$TIMESTAMP [ERROR] $R please run the script with root user access $N" | tee -a $LOG_FILE
+    echo -e "$TIMESTAMP [ERROR] $R please run the script with root user access $N" | tee -a $LOGS_FILE
     exit 1
 fi
 
 VALIDATE() {
     if [ $1 -ne 0 ]; then
-        echo -e "$TIMESTAMP [ERROR] $R $2 .... failed $N" | tee -a $LOG_FILE
+        echo -e "$TIMESTAMP [ERROR] $R $2 .... failed $N" | tee -a $LOGS_FILE
         exit 1
     else
-        echo -e "$TIMESTAMP [INFO] $G $2 .... success $N" | tee -a $LOG_FILE
+        echo -e "$TIMESTAMP [INFO] $G $2 .... success $N" | tee -a $LOGS_FILE
     fi
 }
 
 cp mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "copying mongo.repo file"
 
-dnf install mongodb-org -y &>>$LOG_FILE
+dnf install mongodb-org -y &>>$LOGS_FILE
 VALIDATE $? "installing mongodb-org"
 
 systemctl enable mongod
