@@ -15,31 +15,31 @@ N="\e[0m"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
 if [ $USER_ID -ne 0 ]; then
-    echo -e "$TIMESTAMP [ERROR] $R please run the script with root access $N" | tee -a $LOGFILE
+    echo -e "$TIMESTAMP [ERROR] $R please run the script with root access $N" | tee -a $LOGS_FILE
     exit 1
 fi
 
 VALIDATE() {
     if [ $1 -ne 0 ]; then
-        echo -e "$TIMESTAMP [ERROR] $R $2 .... failed $N" | tee -a $LOGFILE
+        echo -e "$TIMESTAMP [ERROR] $R $2 .... failed $N" | tee -a $LOGS_FILE
         exit 1
     else
-        echo -e "$TIMESTAMP [INFO] $G $2 .... success $N" | tee -a $LOGFILE
+        echo -e "$TIMESTAMP [INFO] $G $2 .... success $N" | tee -a $LOGS_FILE
     fi
 }
 
-dnf module disable nodejs -y &>> $LOGFILE
+dnf module disable nodejs -y &>> $LOGS_FILE
 VALIDATE $? "disabling nodejs module"
 
-dnf module enable nodejs:20 -y &>> $LOGFILe
+dnf module enable nodejs:20 -y &>> $LOGS_FILE
 VALIDATE $? "Enabling nodejs module"
 
-dnf install nodejs -y &>> $LOGFILE
+dnf install nodejs -y &>> $LOGS_FILE
 VALIDATE $? "Installing nodejs"
 
 id roboshop
 if [ $? -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>> $LOGFILE
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>> $LOGS_FILE
     VALIDATE $? "Creating roboshop system user"
 else
     echo -e "System user roboshop already created ... $Y SKIPPING $N"
@@ -51,39 +51,39 @@ VALIDATE $? "removing existing code"
 rm -rf /tmp/catalogue.zip
 VALIDATE $? "removing catalogue zip"
 
-mkdir -p /app &>> $LOGFILE
+mkdir -p /app &>> $LOGS_FILE
 VALIDATE $? "Creating app directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>> $LOGFILE
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>> $LOGS_FILE
 cd /app
-unzip /tmp/catalogue-v3.zip &>> $LOGFILE
+unzip /tmp/catalogue.zip &>> $LOGS_FILE
 VALIDATE $? "Downloaded and extrated catalogue code"
 
-npm install &>> $LOGFILE
+npm install &>> $LOGS_FILE
 VALIDATE $? "Installing dependencies"
 
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "Created systemctl service"
 
-systemctl daemon-reload &>> $LOGFILE
+systemctl daemon-reload &>> $LOGS_FILE
 VALIDATE $? "Daemon reload is done"
 
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "Added mongo repo"
 
-dnf install mongodb-mongosh -y &>> $LOGFILE
+dnf install mongodb-mongosh -y &>> $LOGS_FILE
 VALIDATE $? "Installing mongodb client"
 
-INDEX=$(mongosh --host mongodb.daws90s.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+INDEX=$(mongosh --host 172.31.23.251 --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 
 if [ $INDEX -lt 0 ]; then
-    mongosh --host MONGODB-SERVER-IPADDRESS </app/db/master-data.js &>> $LOGFILE
+    mongosh --host 172.31.23.251 </app/db/master-data.js &>> $LOGS_FILE
     VALIDATE $? "Load Products"
 else
     echo -e "Products already loaded ... $Y SKIPPING $N"
 fi
 
 
-systemctl enable catalogue &>> $LOGFILE
-systemctl start catalogue &>> $LOGFILE
+systemctl enable catalogue &>> $LOGS_FILE
+systemctl start catalogue &>> $LOGS_FILE
 VALIDATE $? "Restarting catalogue"
