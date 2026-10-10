@@ -39,7 +39,11 @@ systemctl enable mariadb &>> $LOGS_FILE
 systemctl start mariadb &>> $LOGS_FILE
 VALIDATE $? "enabled and started mysql-server"
 
-sudo mysql -e "ALTER USER 'root'@'%' IDENTIFIED BY 'RoboShop@1';"
+# sudo mysql -e "ALTER USER 'root' IDENTIFIED BY 'RoboShop@1';
+
+sudo mysql -e "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'RoboShop@1';"
+sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
+sudo mysql -e "FLUSH PRIVILEGES;"
 VALIDATE $? "Setting root password"
 
 # mysql_secure_installation --set-root-pass RoboShop@1
