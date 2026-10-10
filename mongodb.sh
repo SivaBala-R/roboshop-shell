@@ -13,13 +13,13 @@ Y="\e[33m"
 N="\e[0m"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
-if [$USER_ID -ne 0]; then
+if [ $USER_ID -ne 0 ]; then
     echo -e "$TIMESTAMP [ERROR] $R please run the script with root user access $N" | tee -a $LOG_FILE
     exit 1
 fi
 
 VALIDATE() {
-    if [ $1 -ne 0]; then
+    if [ $1 -ne 0 ]; then
         echo -e "$TIMESTAMP [ERROR] $R $2 .... failed $N" | tee -a $LOG_FILE
         exit 1
     else
