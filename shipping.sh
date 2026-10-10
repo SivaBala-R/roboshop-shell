@@ -71,24 +71,25 @@ VALIDATE $? "daemon-reload"
 dnf install mariadb105 -y &>> $LOGS_FILE
 VALIDATE $? "Installing mysql"
 
+
+# systemctl start shipping &>> $LOGS_FILE
+# VALIDATE $? "enabling and starting shipping service"
+
+mysql -h $MYSQL_HOST -u root -pRoboShop@1 -e "use cities" &>>$LOGS_FILE
+if [ $? -ne 0 ]; then
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql
+    VALIDATE $? "Data loaded"
+else
+    echo -e "Data already loaded ... $Y SKIPPING $N"
+fi
+
+# mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
+# mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql
+# mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql
+# VALIDATE $? "loading data"
+
 systemctl enable shipping &>> $LOGS_FILE
-systemctl start shipping &>> $LOGS_FILE
-VALIDATE $? "enabling and starting shipping service"
-
-# mysql -h $MYSQL_HOST -u root -pRoboShop@1 -e "use cities" &>>$LOGS_FILE
-# if [ $? -ne 0 ]; then
-#     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
-#     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql
-#     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql
-#     VALIDATE $? "Data loaded"
-# else
-#     echo -e "Data already loaded ... $Y SKIPPING $N"
-# fi
-
-mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
-mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql
-mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql
-VALIDATE $? "loading data"
-
 systemctl restart shipping &>> $LOGS_FILE
 VALIDATE $? "enabling and starting the service"
