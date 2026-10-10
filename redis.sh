@@ -32,9 +32,9 @@ VALIDATE(){
 dnf install redis6 -y &>> $LOGS_FILE
 VALIDATE $? "Installing redis package"
 
-sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis/redis.conf
+sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis6/redis6.conf
 VALIDATE $? "Allowing remote connection(update on redis config file)"
 
-systemctl enable redis &>> $LOGS_FILE
-systemctl start redis &>> $LOGS_FILE
+systemctl enable redis6 &>> $LOGS_FILE
+systemctl start redis6 &>> $LOGS_FILE
 VALIDATE $? "enabled and stated redis"
