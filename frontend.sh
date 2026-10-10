@@ -28,8 +28,8 @@ VALIDATE(){
     fi
 }
 
-dnf module disable nginx -y &>> $LOGFILE
-dnf module enable nginx:1.24 -y &>> $LOGFILE
+# dnf module disable nginx -y &>> $LOGFILE
+# dnf module enable nginx:1.24 -y &>> $LOGFILE
 dnf install nginx -y &>> $LOGFILE
 VALIDATE $? "Installing nodejs"
 

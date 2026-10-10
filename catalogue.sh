@@ -37,7 +37,7 @@ VALIDATE() {
 dnf install nodejs20 -y &>> $LOGS_FILE
 VALIDATE $? "Installing nodejs"
 
-id roboshop
+id roboshop &>> $LOGS_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>> $LOGS_FILE
     VALIDATE $? "Creating roboshop system user"
@@ -76,7 +76,7 @@ VALIDATE $? "Installing mongodb client"
 
 INDEX=$(mongosh --host 172.31.23.251 --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 
-if [ $INDEX -lt 0 ]; then
+if [ "$INDEX" -lt 0 ]; then
     mongosh --host 172.31.23.251 </app/db/master-data.js &>> $LOGS_FILE
     VALIDATE $? "Load Products"
 else
