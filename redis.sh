@@ -7,10 +7,10 @@ sudo chmod -R 755 $LOGS_FOLDER
 LOGS_FILE="$LOGS_FOLDER/$0.log"
 
 USER_ID=$(id -u)
-R="\[31m"
-G="\[32m"
-Y="\[33m"
-N="\[0m"
+R='\[31m'
+G='\[32m'
+Y='\[33m'
+N='\[0m'
 TIMESTAMP=$(date '+%Y-%m-%s %H:%M:%S')
 
 if [ $USER_ID -ne 0 ]; then
