@@ -39,14 +39,19 @@ systemctl enable mariadb &>> $LOGS_FILE
 systemctl start mariadb &>> $LOGS_FILE
 VALIDATE $? "enabled and started mysql-server"
 
-mysql -u root <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'RoboShop@1';
-CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'RoboShop@1';
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
-EOF
+# mysql -u root <<EOF
+# ALTER USER 'root'@'localhost' IDENTIFIED BY 'RoboShop@1';
+# CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'RoboShop@1';
+# GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+# FLUSH PRIVILEGES;
+# EOF
 
-VALIDATE $? "Setting up root password"
+# mysql -u root -pRoboShop@1 <<EOF
+# CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'RoboShop@1';
+# GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+# FLUSH PRIVILEGES;
+# EOF
+# VALIDATE $? "Setting up root password"
 
 
 # mysql -e "ALTER USER 'root'@'%' IDENTIFIED BY 'RoboShop@1';
