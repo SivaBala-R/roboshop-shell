@@ -71,6 +71,9 @@ VALIDATE $? "daemon-reload"
 dnf install mariadb105 -y &>> $LOGS_FILE
 VALIDATE $? "Installing mysql"
 
+systemctl start shipping &>> $LOGS_FILE
+VALIDATE $? "starting mysql"
+
 mysql -h $MYSQL_HOST -u root -pRoboShop@1 -e "use cities" &>>$LOGS_FILE
 if [ $? -ne 0 ]; then
     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
