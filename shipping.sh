@@ -85,9 +85,9 @@ VALIDATE $? "enabling and starting shipping service"
 #     echo -e "Data already loaded ... $Y SKIPPING $N"
 # fi
 
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/schema.sql
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/app-user.sql
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/master-data.sql
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql
 VALIDATE $? "loading data"
 
 systemctl restart shipping &>> $LOGS_FILE
