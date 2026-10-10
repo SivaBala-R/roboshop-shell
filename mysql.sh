@@ -57,8 +57,8 @@ VALIDATE $? "enabled and started mysql-server"
 # mysql -e "ALTER USER 'root'@'%' IDENTIFIED BY 'RoboShop@1';
 # VALIDATE $? "Setting root password"
 
-# mysql_secure_installation --set-root-pass RoboShop@1
-# VALIDATE $? "Setting up root password"
+mysql_secure_installation --set-root-pass RoboShop@1
+VALIDATE $? "Setting up root password"
 
 # mysql -u root -e "
 # ALTER USER 'root'@'localhost' IDENTIFIED BY 'RoboShop@1';
